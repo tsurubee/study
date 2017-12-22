@@ -6,7 +6,6 @@ reader, writer = os.pipe()
 
 if os.fork():
     # Parent process
-    os.close(writer)
     read_pipe = os.fdopen(reader, 'r')
     message = read_pipe.readline()
     read_pipe.close()
