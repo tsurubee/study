@@ -74,3 +74,13 @@ pattern { action }
 pattern { action }
 ・・・
 ```
+
+## 第3章 テキストエディタ
+#### Vim
+vimはviに数々の拡張機能を加えた高機能なエディタ。  
+設定を~/.vimファイル（もしくは~/.vimrc）から起動時に読むこむため、各自で~/.vimファイルを変更することでVimの動作をカスタマイズできる。  
+'vimtutor'と入力すると、Vimのチュートリアルを始めることができる。
+
+##### QuickFix
+VimにはQuickFixと呼ばれる機能がある。QuickFixとは、エラー結果やgrepの結果が表示される専用のウィンドウ領域のこと。  
+QuickFixは「:copen」で開いて、「:cclose」で閉じる。  
