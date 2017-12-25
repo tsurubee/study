@@ -90,3 +90,23 @@ QuickFixは「:copen」で開いて、「:cclose」で閉じる。
 * 繰り返し行われる定型的な作業を自動化できる  
 * オペレーション時のケアレスミスが起きにくくなる  
 * 処理の再利用が可能になる  
+
+## 第5章 オンラインマニュアル
+### manコマンド
+オンラインマニュアルを表示するコマンド。
+#### セクションの指定
+```
+man 1 printf
+あるいは
+man -s 1 printf
+```
+#### キーワード検索
+```
+$ man -k automatically
+alloca (3)           - allocate memory that is automatically freed
+grub-mkdevicemap (8) - make a device map file automatically
+```
+### infoコマンド
+infoコマンドはmanコマンドと同様にオンラインマニュアルを表示するコマンド。  
+manよりも新しいこともあって優れている点も多いが、操作性に癖がある。
+以下のような特徴がある。  
