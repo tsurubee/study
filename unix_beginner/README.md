@@ -131,3 +131,79 @@ scp ホスト名:パス名 ローカルのパス名
 ```
 scp ローカルのパス名 ホスト名:パス名
 ```
+
+## 第7章 UNIXシステム管理  
+### TCP/IPネットワーク管理  
+ネットワークインターフェイスの設定を行うために`ifconfig`を用いることがあるが、Linuxではifconfigコマンドはメンテナンスされていない過去のコマンドであり、現在はiproute2パッケージのipコマンドを用いるのが適切な方法とされている。  
+OSが内部で保持している宛先ごとの中継ルータの情報を**ルーティングテーブル**と呼ぶ。  
+ルーティングテーブルを表示するには'netstat -r'コマンドを使用する。  
+```
+$ netstat -rn
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 enp0s3
+10.0.2.0        0.0.0.0         255.255.255.0   U         0 0          0 enp0s3
+```
+### 名前解決
+名前解決とは、ホスト名を対応するIPアドレスに変換する処理のことである。  
+以下の手順のいずれかが用いられる。  
+1. /etc/hostsファイルに記載されている対応付けを参照する  
+＜例＞  
+/etc/hosts
+```
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+```
+2. DNS（Domain Name Service）サーバと通信し検索を行う  
+DNSはIPアドレスを検索するための広域分散データベースである。
+
+### トラブルシュート
+* プロセスの状態の確認
+```
+$ ps f
+  PID TTY      STAT   TIME COMMAND
+ 4090 pts/0    Ss     0:00 -bash
+ 4141 pts/0    R+     0:00  \_ ps f
+```
+lsofコマンドを使うと現在実行中のプロセスがどのファイルをオープンしているかを知ることができる。  
+（標準ではインストールされていないことが多い）  
+```
+$ lsof
+COMMAND    PID  TID    USER   FD      TYPE DEVICE  SIZE/OFF     NODE NAME
+systemd      1         root  cwd   unknown                           /proc/1/cwd
+systemd      1         root  rtd   unknown                           /proc/1/root
+```
+
+* ネットワークの使用状況  
+```
+$ netstat -a
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN
+tcp        0      0 localhost:smtp          0.0.0.0:*               LISTEN
+```
+引数なしだと通信中のセッションの情報しか得られないが、-aオプションを指定すると、待ち受け状態の情報も表示される。  
+-rオプションを指定すると、ホストのルーティング情報を表示する。
+
+* pingコマンド
+```
+ping [hostname]
+```
+実行したホストから引数に指定したホストに対してパケットを送出し、それに対しての返答があったかどうかを調べる。  
+※ ただし昨今では、ファイアウォール等の設定でpingが使用しているICMPパケットを遮断している場合も多く、このような場合、pingコマンドに対する応答が得られない。したがって、pingコマンドは応答があった場合に正常だという判断を導くためのものだと考える方がよい。
+
+* traceroute
+```
+traceroute [hostname]
+```
+tracerouteコマンドは対象となるマシンへの経路をたどって表示する。
+
+* TELNET
+telnetは、元々はローカルのマシンからリモートのマシンにログインするためのコマンドであった。しかし、TELNETプロトコルは端末操作の内容が暗号化されずにネットワークを流れるため、この目的でインターネット経由で使われることは現在では少ない。  
+一方、telnetコマンドは接続先ポートを指定して、汎用のTCPクライアントとして使うこともできる。
+```
+telnet [hostname] http
+あるいは
+telnet [hostname] 80
+```
+pingやtracerouteと異なり、実際に接続できるはずのサービスに接続するため、ネットワークに問題があるか、アプリケーションに問題があるかの切り分けがしやすくなる。
